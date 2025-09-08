@@ -31,7 +31,7 @@ class LakeMDP(MDP):
                 if self.grid[r][c] == "S":
                     self.start = ((r, c), "S")
 
-        self.absorb = ABSORB
+        self.absorb = ((ABSORB, ABSORB), ABSORB)
 
     # --- MDP interface -----------------------------------------------------
     def start_state(self) -> State:
@@ -68,6 +68,7 @@ class LakeMDP(MDP):
             return [(self.absorb, 1.0)]
         if self.is_terminal(s):
             return [(self.absorb, 1.0)]
+
 
         moves = {"UP": (-1, 0), "DOWN": (1, 0), "LEFT": (0, -1), "RIGHT": (0, 1)}
         lateral = {
