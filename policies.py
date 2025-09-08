@@ -23,13 +23,14 @@ class CustomPolicy(Policy):
 
     def _decision(self, s: State) -> Action:
         acts = list(self.mdp.actions(s))
-        if s == "⊥": return "⊥"
-        r, c = pos
+        if s == self.mdp.absorb:
+            return "⊥"
         (pos, val) = s
-
+        r, c = pos
+    
         if r+1 < self.mdp.rows and self.mdp.grid[r+1][c] != "H":
             return "DOWN"
-
+    
         if c+1 < self.mdp.cols and self.mdp.grid[r][c+1] != "H":
             return "RIGHT"
         return acts[0]
