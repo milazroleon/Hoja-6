@@ -28,28 +28,31 @@ class LakeMDP(MDP):
         for r in range(self.rows):
             for c in range(self.cols):
                 if self.grid[r][c] == "S":
-                    self.start = (r, c)
-        self.absorb = "⊥" 
+                    self.start = (r,c,"S")
+        self.absorb = ABSORB
+
 
     # --- MDP interface -----------------------------------------------------
     def start_state(self) -> State:
         return self.start
 
     def actions(self, s: State) -> Iterable[Action]:
-        return [UP, RIGHT, DOWN, LEFT] if s != self.absorb else [ABSORB]
-
+        if s == ABSORB: return [ABSORB]
+        r,c,val = s
+        if val in ("H","G"): return [ABSORB]
+        return [UP,RIGHT,DOWN,LEFT]
+    
     def reward(self, s: State) -> float:
-        if self.grid[s[0]][s[1]] == "H":
-            return -1.0
-        elif self.grid[s[0]][s[1]] == "G":
-            return 1.0
-        elif self.grid[s[0]][s[1]] in ("F", "F"):
-            return 1.0
-        else:
-            return 0.0
+        if s == ABSORB: return 0.0
+        r,c,val = s
+        if val == "F": return 0.1
+        if val == "H": return -1.0
+        if val == "G": return 1.0
+        return 0.0
 
     def is_terminal(self, s: State) -> bool:
-        return s == self.absorb
+        if s == ABSORB: return True
+        return s[2] in ("H","G")
 
     def transition(self, s: State, a: Action) -> List[Tuple[State, float]]:
         if s == self.absorb:
@@ -69,8 +72,8 @@ class LakeMDP(MDP):
         return dist
     
     def _move(self, s, delta):
-        r, c = s
-        nr, nc = r + delta[0], c + delta[1]
+        r,c = rc
+        nr, nc = r+delta[0], c+delta[1]
         if 0 <= nr < self.rows and 0 <= nc < self.cols:
-            return (nr,nc)
-        return s 
+            return (nr,nc,"S")
+        return (r,c,"S")
