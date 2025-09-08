@@ -38,10 +38,10 @@ def evaluate_all(trials: int = 100, base_seed: int = 123):
             best = "custom" if sum_cust["utility_variance"] < sum_rand["utility_variance"] else "random"
 
 
-    report["gammas"][str(gamma)] = {
-        "random": sum_rand,
-        "custom": sum_cust,
-        "winner": best,
-    }
+        report["gammas"][str(gamma)] = {
+            "random": sum_rand,
+            "custom": sum_cust,
+            "winner": best,
+        }
 
     return report
