@@ -25,11 +25,11 @@ class LakeMDP(MDP):
         self.rows = len(self.grid)
         self.cols = len(self.grid[0])
 
-        # encontrar estado inicial
+        # estado inicial ((r,c), "S")
         for r in range(self.rows):
             for c in range(self.cols):
                 if self.grid[r][c] == "S":
-                    self.start = (r, c)
+                    self.start = ((r, c), "S")
 
         self.absorb = ABSORB
 
@@ -40,16 +40,15 @@ class LakeMDP(MDP):
     def actions(self, s: State) -> Iterable[Action]:
         if s == self.absorb:
             return [ABSORB]
-        r, c = s
-        if self.grid[r][c] in ("H", "G"):
+        (r, c), val = s
+        if val in ("H", "G"):
             return [ABSORB]
         return [UP, RIGHT, DOWN, LEFT]
 
     def reward(self, s: State) -> float:
         if s == self.absorb:
             return 0.0
-        r, c = s
-        val = self.grid[r][c]
+        (r, c), val = s
         if val == "F":
             return 0.1
         if val == "H":
@@ -61,8 +60,8 @@ class LakeMDP(MDP):
     def is_terminal(self, s: State) -> bool:
         if s == self.absorb:
             return True
-        r, c = s
-        return self.grid[r][c] in ("H", "G")
+        (r, c), val = s
+        return val in ("H", "G")
 
     def transition(self, s: State, a: Action) -> List[Tuple[State, float]]:
         if s == self.absorb:
@@ -78,14 +77,17 @@ class LakeMDP(MDP):
             "RIGHT": ["UP", "DOWN"],
         }
 
+        (r, c), _ = s
         dist = []
         for act, prob in [(a, 0.8)] + [(lat, 0.1) for lat in lateral[a]]:
-            ns = self._move(s, moves[act])
-            dist.append((ns, prob))
+            ns = self._move((r, c), moves[act])
+            rr, cc = ns
+            sym = self.grid[rr][cc]
+            dist.append((((rr, cc), sym), prob))
         return dist
 
-    def _move(self, s: State, delta: Tuple[int, int]) -> State:
-        r, c = s
+    def _move(self, pos: Tuple[int, int], delta: Tuple[int, int]) -> Tuple[int, int]:
+        r, c = pos
         nr, nc = r + delta[0], c + delta[1]
         if 0 <= nr < self.rows and 0 <= nc < self.cols:
             return (nr, nc)
