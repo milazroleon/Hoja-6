@@ -35,12 +35,18 @@ class UtilityAnalyzer:
             gamma_t *= self.gamma
             length += 1
             if self.mdp.is_terminal(ns):
-                cell = self.mdp.grid[ns[0]][ns[1]] if ns != "⊥" else None
-                if cell == "G": term_kind = "goal"
-                elif cell == "H": term_kind = "hole"
+                if ns == self.mdp.absorb:
+                    cell = None
+                else:
+                    (pos, val) = ns
+                    r, c = pos
+                    cell = self.mdp.grid[r][c]
+                    if cell == "G":
+                        term_kind = "goal"
+                    elif cell == "H":
+                        term_kind = "hole"
                 s = self.mdp.absorb
                 break
-            s = ns
         return total, length, term_kind
 
     def evaluate(
