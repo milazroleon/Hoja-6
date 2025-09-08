@@ -20,6 +20,8 @@ def evaluate_all(trials: int = 100, base_seed: int = 123):
     """
     report = {"n_trials": int(trials), "base_seed": int(base_seed), "gammas": {}}
 
+    gammas = [0.9, 0.95, 0.99]
+
     for gamma in gammas:
         mdp = LakeMDP(DEFAULT_MAP)
         ua = UtilityAnalyzer(mdp, gamma=gamma)
