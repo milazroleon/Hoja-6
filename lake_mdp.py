@@ -25,13 +25,12 @@ class LakeMDP(MDP):
         self.rows = len(self.grid)
         self.cols = len(self.grid[0])
 
-        # estado inicial ((r,c), "S")
         for r in range(self.rows):
             for c in range(self.cols):
                 if self.grid[r][c] == "S":
                     self.start = ((r, c), "S")
 
-        self.absorb = ((ABSORB, ABSORB), ABSORB)
+        self.absorb = (ABSORB, ABSORB)
 
     # --- MDP interface -----------------------------------------------------
     def start_state(self) -> State:
