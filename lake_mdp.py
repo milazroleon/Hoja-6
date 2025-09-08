@@ -55,7 +55,8 @@ class LakeMDP(MDP):
             return -1.0
         if val == "G":
             return 1.0
-        return 0.0  # S no da recompensa
+        return 0.0
+
 
     def is_terminal(self, s: State) -> bool:
         if s == self.absorb:
