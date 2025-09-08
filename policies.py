@@ -24,7 +24,8 @@ class CustomPolicy(Policy):
     def _decision(self, s: State) -> Action:
         acts = list(self.mdp.actions(s))
         if s == "⊥": return "⊥"
-        r,c = s
+        r, c = pos
+        (pos, val) = s
 
         if r+1 < self.mdp.rows and self.mdp.grid[r+1][c] != "H":
             return "DOWN"
